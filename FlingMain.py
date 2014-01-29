@@ -1,12 +1,13 @@
 import pygame, sys
+import levelfile
 
 # RGB Color definitions
-black = (0, 0, 0)
-grey = (100, 100, 100)
-white = (255, 255, 255)
-green = (0, 255, 0)
-red   = (255, 0, 0)
-blue  = (0, 0, 255)
+BLACK = (0, 0, 0)
+GREY = (100, 100, 100)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
 
 HEIGHT = 600
 WIDTH = 800
@@ -27,12 +28,16 @@ class FlingMain:
 
         clock = pygame.time.Clock()
 
-        # define level firstLevel
+        #instantiate new player and enemies
+        player = []
+        enemies = []
 
-        main_loop(screen, firstLevel, clock, False, False)
+        firstLevel = levelfile.Level(player, enemies)
 
-    def main_loop(window, level, clock, stop, pause):
-        level.assets.draw(window)
+        self.main_loop(screen, firstLevel, clock, False, False)
+
+    def main_loop(self, window, level, clock, stop, pause):
+        level.draw(window)
         pygame.display.flip()
         
         if stop == True:
@@ -54,7 +59,7 @@ class FlingMain:
                             pause = True
 
             if stop == False and pause == False: 
-                level.assets.draw(screen)
+                level.draw(window)
                 pygame.display.flip()
                 clock.tick(60)
 
@@ -62,4 +67,4 @@ class FlingMain:
                 # Update state of all entities
                 # Read Player input
 
-            pygame.quit()
+        pygame.quit()
