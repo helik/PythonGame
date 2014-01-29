@@ -33,32 +33,30 @@ class FlingMain:
         self.main_loop(screen, firstLevel, clock, False, False)
 
     def main_loop(self, window, level, clock, stop, pause):
-        level.draw(window)
+        scrollAmt = 0
+        level.build(window)
         pygame.display.flip()
         
-        if stop == True:
-            # change to something more accessible to the user
-            again = raw_input("Restart?\n")
-            if again == 'yes':
-                start_game()
-        
-        while stop == False:        
+        while True:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT: 
-                    stop = True
+                if event.type == pygame.QUIT: #user clicks close
                     pygame.quit()
-                elif event.type==pygame.KEYDOWN:
-                    if event.key==pygame.K_p:
-                        if pause:
-                            pause = False
-                        else:
-                            pause = True
+                
+            keys = pygame.key.get_pressed()
+            
+            if keys[pygame.K_d]:
+                scrollAmt -= 2
+            if keys[pygame.K_a]:
+                scrollAmt +=2
 
-            if stop == False and pause == False: 
-                level.draw(window)
-                level.update()
-                pygame.display.flip()
-                clock.tick(60)
+            level.scroll(window, scrollAmt)
+                        
+            scrollAmt = 0
+            
+            level.update()
+            level.draw(window)
+            pygame.display.flip()
+            clock.tick(60)
 
             
                 # main game loops

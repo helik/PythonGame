@@ -16,5 +16,6 @@ class Platform(pygame.sprite.Sprite):
 
     def get_col(self):
         return self.col
-        
-    
+
+    def move_x(self, amt):
+        self.rect.move(amt, 0)

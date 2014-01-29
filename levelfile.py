@@ -19,7 +19,7 @@ class Level:
     def get_background(self):
         pass
 
-    def draw(self, window):
+    def build(self, window):
         layout = self.get_layout()
         
         # create a sprite group that holds the platforms & a list to keep track of them
@@ -41,6 +41,9 @@ class Level:
 ##                    self.enemy_sprites.add(enemy)
 ##                    self.enemies.append(enemy)
 
+        self.draw(window)
+
+    def draw(self, window):
         # start to draw the level
         # draw background
         window.fill(flingmain.WHITE)
@@ -60,7 +63,6 @@ class Level:
 
         for p in self.platform_sprites:
             collision = pygame.sprite.collide_rect(self.player.sprites()[0], p)
-            print collision
             
             if collision:
                 self.player.sprites()[0].grounded = True
@@ -74,5 +76,15 @@ class Level:
 
         # set player to proper height if grounded
         
-            
-                
+    def scroll(self, window, amt):
+        # DONT 4GET TO UPDATE THE ENEMY POSITIONS >:O
+
+        if amt > 0:
+            self.player.sprites()[0].face_left()
+        if amt < 0:
+            self.player.sprites()[0].face_right()
+        
+        for p in self.platforms:
+            p.rect.x += amt
+        print amt
+
