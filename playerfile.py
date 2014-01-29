@@ -7,6 +7,7 @@ class Player(pygame.sprite.Sprite):
         #level will scroll past player, so x position is fixed
         self.xPos = 300.0;
         self.yPos = 50.0; #initial y position
+        self.yVel = 0.0;
         self.leftImage = pygame.image.load("Textures/player.png").convert_alpha()
         self.rightImage = pygame.image.load("Textures/player.png").convert_alpha()
         self.leftImage = pygame.transform.scale(self.rightImage, (75, 75))
@@ -21,7 +22,30 @@ class Player(pygame.sprite.Sprite):
 
     def face_right(self):
         self.image = self.rightImage
+        
+    def update(self, platform_sprites):
+        #check if player is touching platform
+        platformHitList = pygame.sprite.spritecollide(self, platform_sprites, False)
 
-    def calculate_y(self):
-        if self.grounded:
-            #stuff about jumping here
+        if not platformHitList:
+            #if the player isn't touching a platform, the player will fall
+            self.grounded = False
+            self.yVel += 1
+        else:
+            self.yVel = 0.0
+            #find which platforms the player is touching
+            for p in platformHitList:
+                self.grounded = True
+                # set the bottom of the player sprite to the top of the platform
+                self.rect.bottom = p.rect.top
+
+        self.yPos += self.yVel
+        self.rect.y = int(self.yPos)
+
+
+
+    def jump(self):
+        self.grounded = False
+        self.yVel = 100
+
+        

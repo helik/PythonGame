@@ -12,7 +12,7 @@ BLUE = (0, 0, 255)
 HEIGHT = 600
 WIDTH = 800
 
-# main class, houses main loop of game
+# main class, houses main loop of gamed
 class FlingMain:
                                                           
     def start_game(self, width = WIDTH, height = HEIGHT):
@@ -49,6 +49,8 @@ class FlingMain:
                 scrollAmt -= 2
             if keys[pygame.K_a]:
                 scrollAmt +=2
+            if keys[pygame.K_SPACE]:
+                level.player.jump()
 
             level.scroll(scrollAmt)
                         

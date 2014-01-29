@@ -59,20 +59,9 @@ class Level:
         
     def update(self):
 
-        #check if player is touching platform
-        platformHitList = pygame.sprite.spritecollide(self.player, self.platform_sprites, False)
-
-        #find which platforms the player is touching
-        for p in platformHitList:
-            self.player.grounded = True
-            # set the bottom of the player sprite to the top of the platform
-            self.player.rect.bottom = p.rect.top
+        self.player.update(self.platform_sprites)
         
-        # if the player is not on a platform, the player falls
-        if not self.player.grounded:
-            self.player.rect.y += 10
-
-        # set player to proper height if grounded
+        
         
     def scroll(self, amt):
         # DONT 4GET TO UPDATE THE ENEMY POSITIONS >:O
