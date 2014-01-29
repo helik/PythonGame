@@ -62,3 +62,11 @@ class Level:
         # draw enemies
        # self.enemy_sprites.draw(window)
         
+    def update(self):
+
+        #check if player is touching platform
+
+        for p in platform_sprites:
+            if not pygame.collide_rect(self.player, p):
+                player.yPos -= 10
+                

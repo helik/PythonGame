@@ -60,9 +60,11 @@ class FlingMain:
 
             if stop == False and pause == False: 
                 level.draw(window)
+                level.update()
                 pygame.display.flip()
                 clock.tick(60)
 
+            
                 # main game loops
                 # Update state of all entities
                 # Read Player input
