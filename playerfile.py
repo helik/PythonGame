@@ -21,3 +21,7 @@ class Player(pygame.sprite.Sprite):
 
     def face_right(self):
         self.image = self.rightImage
+
+    def calculate_y(self):
+        if self.grounded:
+            #stuff about jumping here

@@ -7,9 +7,9 @@ class Level:
         self.PLATFORM = 1
         self.ENEMY = 2
 
-        p = playerfile.Player()
-        self.player = pygame.sprite.Group()
-        self.player.add(p)
+        self.player = playerfile.Player()
+        self.player_sprite = pygame.sprite.Group()
+        self.player_sprite.add(self.player)
 
     # this is a list with numerical representations of the level
     def get_layout(self):
@@ -55,36 +55,32 @@ class Level:
        # self.enemy_sprites.draw(window)
 
         # draw player
-        self.player.draw(window)
+        self.player_sprite.draw(window)
         
     def update(self):
 
         #check if player is touching platform
+        platformHitList = pygame.sprite.spritecollide(self.player, self.platform_sprites, False)
 
-        for p in self.platform_sprites:
-            collision = pygame.sprite.collide_rect(self.player.sprites()[0], p)
-            
-            if collision:
-                self.player.sprites()[0].grounded = True
-
-        if not self.player.sprites()[0].grounded:
-            self.player.sprites()[0].rect.y += 10
-        else:
-            currY = self.player.sprites()[0].rect.y + 75
-
-            self.player.sprites()[0].rect.y = currY / 50 * 50 - 75 #herpaderp
+        #find which platforms the player is touching
+        for p in platformHitList:
+            self.player.grounded = True
+            # set the bottom of the player sprite to the top of the platform
+            self.player.rect.bottom = p.rect.top
+        
+        # if the player is not on a platform, the player falls
+        if not self.player.grounded:
+            self.player.rect.y += 10
 
         # set player to proper height if grounded
         
-    def scroll(self, window, amt):
+    def scroll(self, amt):
         # DONT 4GET TO UPDATE THE ENEMY POSITIONS >:O
 
         if amt > 0:
-            self.player.sprites()[0].face_left()
+            self.player.face_left()
         if amt < 0:
-            self.player.sprites()[0].face_right()
+            self.player.face_right()
         
         for p in self.platforms:
             p.rect.x += amt
-        print amt
-

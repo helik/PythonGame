@@ -33,14 +33,15 @@ class FlingMain:
         self.main_loop(screen, firstLevel, clock, False, False)
 
     def main_loop(self, window, level, clock, stop, pause):
+        run = True
         scrollAmt = 0
         level.build(window)
         pygame.display.flip()
         
-        while True:
+        while run:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: #user clicks close
-                    pygame.quit()
+                    run = False
                 
             keys = pygame.key.get_pressed()
             
@@ -49,7 +50,7 @@ class FlingMain:
             if keys[pygame.K_a]:
                 scrollAmt +=2
 
-            level.scroll(window, scrollAmt)
+            level.scroll(scrollAmt)
                         
             scrollAmt = 0
             
