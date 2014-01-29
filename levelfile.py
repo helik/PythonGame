@@ -1,26 +1,15 @@
 import pygame, pickle
-import flingmain, platformfile
+import flingmain, platformfile, playerfile
 
 class Level:
     
-    def __init__(self, player, enemies):
-
-        self.player = player
-        self.enemies = enemies
-
+    def __init__(self):
         self.PLATFORM = 1
         self.ENEMY = 2
-        
-    def get_player(self):
-        pass
 
-    # return sprite group
-    def get_enemies(self):
-        pass
-
-    # return sprite group
-    def get_platforms(self):
-        pass
+        p = playerfile.Player()
+        self.player = pygame.sprite.Group()
+        self.player.add(p)
 
     # this is a list with numerical representations of the level
     def get_layout(self):
@@ -61,12 +50,29 @@ class Level:
         
         # draw enemies
        # self.enemy_sprites.draw(window)
+
+        # draw player
+        self.player.draw(window)
         
     def update(self):
 
         #check if player is touching platform
 
-        for p in platform_sprites:
-            if not pygame.collide_rect(self.player, p):
-                player.yPos -= 10
+        for p in self.platform_sprites:
+            collision = pygame.sprite.collide_rect(self.player.sprites()[0], p)
+            print collision
+            
+            if collision:
+                self.player.sprites()[0].grounded = True
+
+        if not self.player.sprites()[0].grounded:
+            self.player.sprites()[0].rect.y += 10
+        else:
+            currY = self.player.sprites()[0].rect.y + 75
+
+            self.player.sprites()[0].rect.y = currY / 50 * 50 - 75 #herpaderp
+
+        # set player to proper height if grounded
+        
+            
                 

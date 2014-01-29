@@ -28,11 +28,7 @@ class FlingMain:
 
         clock = pygame.time.Clock()
 
-        #instantiate new player and enemies
-        player = []
-        enemies = []
-
-        firstLevel = levelfile.Level(player, enemies)
+        firstLevel = levelfile.Level()
 
         self.main_loop(screen, firstLevel, clock, False, False)
 
