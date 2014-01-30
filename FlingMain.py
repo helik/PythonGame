@@ -46,21 +46,17 @@ class FlingMain:
             keys = pygame.key.get_pressed()
             
             if keys[pygame.K_d]:
-                scrollAmt -= 2
+                scrollAmt -= 3
             if keys[pygame.K_a]:
-                scrollAmt +=2
+                scrollAmt += 3
             if keys[pygame.K_SPACE]:
                 level.player.jump()
 
-            level.scroll(scrollAmt)
-                        
-            scrollAmt = 0
-            
-            level.update()
+            level.update(scrollAmt)
             level.draw(window)
             pygame.display.flip()
             clock.tick(60)
-
+            scrollAmt = 0
             
                 # main game loops
                 # Update state of all entities

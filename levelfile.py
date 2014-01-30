@@ -57,11 +57,18 @@ class Level:
         # draw player
         self.player_sprite.draw(window)
         
-    def update(self):
+    def update(self, amt):
 
         self.player.update(self.platform_sprites)
+
+        if self.player.get_hitLeft():
+            if amt > 0:
+                amt = 0
+        if self.player.get_hitRight():
+            if amt < 0:
+                amt = 0
         
-        
+        self.scroll(amt)
         
     def scroll(self, amt):
         # DONT 4GET TO UPDATE THE ENEMY POSITIONS >:O
@@ -72,4 +79,4 @@ class Level:
             self.player.face_right()
         
         for p in self.platforms:
-            p.rect.x += amt
+            p.move_x(amt)
