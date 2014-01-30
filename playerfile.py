@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
                                 (75, 75)), True, False)
         self.rect = pygame.Rect(self.xPos, self.yPos, 75, 75)
         self.grounded = False
-        self.jumping = True
+        self.jumping = False
 
     def face_left(self):
         self.image = self.leftImage
@@ -32,32 +32,33 @@ class Player(pygame.sprite.Sprite):
             #if the player isn't touching a platform, the player will fall
             self.grounded = False
             self.yVel += 1
-        else:
+        elif not self.jumping:
+            # If the player is currently on the upward part of the jump arc, they
+            # they shouldn't check to see if they're grounded. Otherwise they'd get stuck
             self.grounded = True
             self.yVel = 0.0
-            #find which platforms the player is touching
+            # find which platforms the player is touching
+            # temp holds the first platform, just in case there aren't any others in the list 
             temp = platformHitList[0].rect
             tempY = temp.top
             for p in platformHitList:
-                if p.rect.top < tempY:
+                if p.rect.top > tempY:
                     temp = p.rect
                     tempY = temp.top
 
             self.rect.bottom = temp.top + 1
             self.yPos = self.rect.y
 
-        print "BEFORE bottom of player: " + str(self.rect.bottom) + "; yVel: " + str(self.yVel) \
-              + "; yPos: " + str(self.yPos)
         self.yPos += self.yVel
         self.rect.y = int(self.yPos)
-        print "AFTER bottom of player: " + str(self.rect.bottom) + "; rect.y: " + str(self.rect.y)
 
-        
-
-
-
+        if self.yVel >= 0 and self.jumping and not self.grounded:
+            self.jumping = False
+            
     def jump(self):
-        self.grounded = False
-        self.yVel = -5
+        if self.grounded and not self.jumping:
+            self.grounded = False
+            self.jumping = True
+            self.yVel = -15
 
         
