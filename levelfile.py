@@ -128,6 +128,17 @@ class Level:
         questionText = pygame.font.SysFont("Courier New", 24)
         questionImage = questionText.render("Press Enter to start", False, flingmain.BLACK)
         window.blit(questionImage, (265, 200))
+        instructionsText = pygame.font.SysFont("Courier New", 24)
+        instructions1 = instructionsText.render("a -- left", False, flingmain.BLACK)
+        instructions2 = instructionsText.render("d -- right", False, flingmain.BLACK)
+        instructions3 = instructionsText.render("space -- jump", False, flingmain.BLACK)
+        instructions4 = instructionsText.render("u (hold) -- pick up enemy", False, flingmain.BLACK)
+        instructions5 = instructionsText.render("u (release) -- throw enemy", False, flingmain.BLACK)
+        window.blit(instructions1, (340, 300))
+        window.blit(instructions2, (338, 350))
+        window.blit(instructions3, (320, 400))
+        window.blit(instructions4, (230, 450))
+        window.blit(instructions5, (225, 500))
 
     def end(self, window):
         window.fill(flingmain.BLACK)
