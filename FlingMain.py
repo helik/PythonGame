@@ -46,9 +46,9 @@ class FlingMain:
             keys = pygame.key.get_pressed()
             
             if keys[pygame.K_d]:
-                scrollAmt -= 3
+                scrollAmt -= 4
             if keys[pygame.K_a]:
-                scrollAmt += 3
+                scrollAmt += 4
             if keys[pygame.K_SPACE]:
                 level.player.jump()
 

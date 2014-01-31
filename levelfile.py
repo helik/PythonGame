@@ -1,5 +1,5 @@
 import pygame, pickle
-import flingmain, platformfile, playerfile
+import flingmain, platformfile, playerfile, enemyfile
 
 class Level:
     
@@ -26,9 +26,9 @@ class Level:
         self.platform_sprites = pygame.sprite.Group()
         self.platforms = []
         # create a sprite group that holds the enemies & a list to keep track of them
-     #   self.enemy_sprites = pygame.sprite.Group()
-     #   self.enemies = []
-
+        self.enemy_sprites = pygame.sprite.Group()
+        self.enemies = []
+        enemyId = 0
         # traverse the layout and add sprites to their appropriate group by location
         for row in range(len(layout)):
             for col in range(len(layout[row])):
@@ -36,10 +36,11 @@ class Level:
                     platform = platformfile.Platform(row, col)
                     self.platform_sprites.add(platform)
                     self.platforms.append(platform)
-##                elif layout[row][col] == self.ENEMY:
-##                    enemy = enemyfile.Enemy(row, col)
-##                    self.enemy_sprites.add(enemy)
-##                    self.enemies.append(enemy)
+                elif layout[row][col] == self.ENEMY:
+                    enemy = enemyfile.Enemy(row, col, enemyId)
+                    self.enemy_sprites.add(enemy)
+                    self.enemies.append(enemy)
+                    enemyId += 1
 
         self.draw(window)
 
@@ -52,7 +53,7 @@ class Level:
         self.platform_sprites.draw(window)
         
         # draw enemies
-       # self.enemy_sprites.draw(window)
+        self.enemy_sprites.draw(window)
 
         # draw player
         self.player_sprite.draw(window)
@@ -61,12 +62,21 @@ class Level:
 
         self.player.update(self.platform_sprites)
 
-        if self.player.get_hitLeft():
+        for e in self.enemies:
+            e.update()
+
+##        if self.player.get_hitLeft():
+##            if amt > 0:
+##                amt = 0
+##        if self.player.get_hitRight():
+##            if amt < 0:
+##                amt = 0
+
+        if self.player.booped:
             if amt > 0:
-                amt = 0
-        if self.player.get_hitRight():
-            if amt < 0:
-                amt = 0
+                amt = -7
+            else:
+                amt = 7
         
         self.scroll(amt)
         
@@ -80,3 +90,6 @@ class Level:
         
         for p in self.platforms:
             p.move_x(amt)
+
+        for e in self.enemies:
+            e.move_x(amt)

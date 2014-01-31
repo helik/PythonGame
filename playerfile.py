@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         #level will scroll past player, so x position is fixed
         self.xPos = 300.0;
-        self.yPos = 50.0; #initial y position
+        self.yPos = 400.0; #initial y position
         self.yVel = 0.0;
         self.leftImage = pygame.image.load("Textures/player.png").convert_alpha()
         self.rightImage = pygame.image.load("Textures/player.png").convert_alpha()
@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.hitTop = []
         self.hitLeft = False
         self.hitRight = False
-
+        self.booped = False
     def face_left(self):
         self.image = self.leftImage
 
@@ -90,16 +90,19 @@ class Player(pygame.sprite.Sprite):
 
     def check_platform_collisions(self, platList):
         self.hitTop = []
+        self.booped = False
         for p in platList:
             hitList = p.side_check(self)
             if hitList[p.TOP]:
                 self.hitTop.append(p)
             self.hitLeft = hitList[p.LEFT]
             self.hitRight = hitList[p.RIGHT]
+            if self.hitLeft or self.hitRight:
+                self.booped = True
 
     def check_height(self):
         for p in self.hitTop:
-            if (self.rect.bottom - p.rect.top) < 3:
+            if (self.rect.bottom - p.rect.top) < 25:
                 return True
         return False
 
