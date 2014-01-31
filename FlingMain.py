@@ -24,7 +24,7 @@ class FlingMain:
         
         screen = pygame.display.set_mode((self.width, self.height))
 
-        pygame.display.set_caption("Boopin'-Ass Game")
+        pygame.display.set_caption("CRAFLINGER")
 
         clock = pygame.time.Clock()
 
