@@ -17,9 +17,21 @@ class Enemy(pygame.sprite.Sprite):
         self.facingRight = self.paramList[enemyId][1]
         self.stepsTaken = 0
         self.step = self.paramList[enemyId][2]
+        self.active = True
+        self.flungRight = False
+        self.flung = False
 
     def update(self):
-        self.move()
+        if self.active:
+            self.move()
+        else:
+            self.rotate_image()
+            if self.flung:
+                if self.flungRight:
+                    self.fly(7)
+                else:
+                    self.fly(-7)
+            
 
     def move(self):
         if self.facingRight:
@@ -33,7 +45,19 @@ class Enemy(pygame.sprite.Sprite):
             self.stepsTaken = 0
 
     def move_x(self, amt):
+        if self.active or self.flung:
+            self.rect.x += amt
+
+    def fly(self, amt):
         self.rect.x += amt
+
+    def deactivate(self):
+        self.active = False
+
+    def rotate_image(self):
+        self.image = pygame.transform.rotate(self.image, 90)
         
-            
+    def fling(self, right):
+        self.flungRight = right
+        self.flung = True
         

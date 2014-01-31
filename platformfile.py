@@ -10,8 +10,8 @@ class Platform(pygame.sprite.Sprite):
         self.rect = pygame.Rect(self.col*50,self.row*50,50,50)
         self.topRect = self.PlatformRect(self.rect.x + 5, self.rect.y, self.rect.w - 10, 1)
         self.leftRect = self.PlatformRect(self.rect.x, self.rect.y + 10, 3, self.rect.h + 30)
-        self.rightRect = self.PlatformRect(self.rect.x + 49, self.rect.y + 10, 3, self.rect.h + 30)
-        self.bottomRect = self.PlatformRect(self.rect.x, self.rect.y + 49, self.rect.w, 1)
+        self.rightRect = self.PlatformRect(self.rect.x + 50, self.rect.y + 10, 3, self.rect.h + 30)
+        self.bottomRect = self.PlatformRect(self.rect.x, self.rect.y + 50, self.rect.w, 1)
         self.rectSprites = pygame.sprite.Group()
         self.rectSprites.add(self.topRect, self.leftRect, self.rightRect, self.bottomRect)
         self.sideList = [self.topRect, self.leftRect, self.rightRect, self.bottomRect]
@@ -36,7 +36,6 @@ class Platform(pygame.sprite.Sprite):
     def side_check(self, player):
         temp = []
         collidedSprites = pygame.sprite.spritecollide(player, self.rectSprites, False)
-        print "collidedSprites: " + str(collidedSprites)
         for r in self.sideList:
             if r in collidedSprites:
                 temp.append(True)

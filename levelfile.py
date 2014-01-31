@@ -8,8 +8,9 @@ class Level:
         self.ENEMY = 2
 
         self.player = playerfile.Player()
-        self.player_sprite = pygame.sprite.Group()
-        self.player_sprite.add(self.player)
+        self.playerSprite = pygame.sprite.Group()
+        self.playerSprite.add(self.player)
+        self.death = pygame.mixer.Sound("crafdeath.wav")
 
     # this is a list with numerical representations of the level
     def get_layout(self):
@@ -23,10 +24,11 @@ class Level:
         layout = self.get_layout()
         
         # create a sprite group that holds the platforms & a list to keep track of them
-        self.platform_sprites = pygame.sprite.Group()
+        self.platformSprites = pygame.sprite.Group()
         self.platforms = []
         # create a sprite group that holds the enemies & a list to keep track of them
-        self.enemy_sprites = pygame.sprite.Group()
+        self.activeEnemySprites = pygame.sprite.Group()
+        self.inactiveEnemySprites = pygame.sprite.Group()
         self.enemies = []
         enemyId = 0
         # traverse the layout and add sprites to their appropriate group by location
@@ -34,11 +36,11 @@ class Level:
             for col in range(len(layout[row])):
                 if layout[row][col] == self.PLATFORM:
                     platform = platformfile.Platform(row, col)
-                    self.platform_sprites.add(platform)
+                    self.platformSprites.add(platform)
                     self.platforms.append(platform)
                 elif layout[row][col] == self.ENEMY:
                     enemy = enemyfile.Enemy(row, col, enemyId)
-                    self.enemy_sprites.add(enemy)
+                    self.activeEnemySprites.add(enemy)
                     self.enemies.append(enemy)
                     enemyId += 1
 
@@ -50,38 +52,62 @@ class Level:
         window.fill(flingmain.WHITE)
 
         # draw platforms
-        self.platform_sprites.draw(window)
+        self.platformSprites.draw(window)
         
         # draw enemies
-        self.enemy_sprites.draw(window)
+        self.activeEnemySprites.draw(window)
 
-        # draw player
-        self.player_sprite.draw(window)
+        # draw enemy being held by the player
+        self.inactiveEnemySprites.draw(window)
         
-    def update(self, amt):
+        # draw player
+        self.playerSprite.draw(window)
+        
+    def update(self, window, amt):
 
-        self.player.update(self.platform_sprites)
+        self.player.update(self.platformSprites)
 
         for e in self.enemies:
             e.update()
 
-##        if self.player.get_hitLeft():
-##            if amt > 0:
-##                amt = 0
-##        if self.player.get_hitRight():
-##            if amt < 0:
-##                amt = 0
+        playerEnemyColl = pygame.sprite.spritecollide(self.player, self.activeEnemySprites, False)
+        if playerEnemyColl:
+            if self.player.grabbing:
+                for e in playerEnemyColl:
+                    e.deactivate()
+                    self.activeEnemySprites.remove(e)
+                    self.inactiveEnemySprites.add(e)
+                    if e not in self.player.holding:
+                        self.player.holding.append(e)
+            else:
+                return False
 
+        for e in self.inactiveEnemySprites:
+            deadEnemies = pygame.sprite.spritecollide(e, self.activeEnemySprites, True)
+            wallHitEnemies = pygame.sprite.spritecollide(e, self.platformSprites, False)
+            if deadEnemies:
+                self.inactiveEnemySprites.remove(e)
+                self.death.play()
+            if wallHitEnemies:
+                self.inactiveEnemySprites.remove(e)
+                self.death.play()
+
+        if self.player.rect.y > 700:
+            return False
+        
         if self.player.booped:
             if amt > 0:
                 amt = -7
             else:
                 amt = 7
+
+        if not self.activeEnemySprites and not self.inactiveEnemySprites:
+            return False
         
         self.scroll(amt)
+        return True
         
     def scroll(self, amt):
-        # DONT 4GET TO UPDATE THE ENEMY POSITIONS >:O
 
         if amt > 0:
             self.player.face_left()
@@ -93,3 +119,31 @@ class Level:
 
         for e in self.enemies:
             e.move_x(amt)
+
+    def start(self, window):
+        window.fill(flingmain.WHITE)
+        startGameText = pygame.font.SysFont("Courier New", 48, True)
+        startGameImage = startGameText.render("Start Game?", False, flingmain.GREEN)
+        window.blit(startGameImage, (250, 100))
+        questionText = pygame.font.SysFont("Courier New", 24)
+        questionImage = questionText.render("Press Enter to start", False, flingmain.BLACK)
+        window.blit(questionImage, (265, 200))
+
+    def end(self, window):
+        window.fill(flingmain.BLACK)
+        gameOverText = pygame.font.SysFont("Courier New", 48, True)
+        gameOverImage = gameOverText.render("Game Over!", False, flingmain.RED)
+        window.blit(gameOverImage, (250, 100))
+        continueText = pygame.font.SysFont("Courier New", 24)
+        continueImage = continueText.render("Press Enter to restart", False, flingmain.WHITE)
+        window.blit(continueImage, (242, 200))
+        
+        
+
+
+
+
+
+
+
+

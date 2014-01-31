@@ -15,7 +15,7 @@ WIDTH = 800
 # main class, houses main loop of gamed
 class FlingMain:
                                                           
-    def start_game(self, width = WIDTH, height = HEIGHT):
+    def start_game(self, waitStart=True, width = WIDTH, height = HEIGHT):
 
         self.width = width
         self.height = height
@@ -30,19 +30,33 @@ class FlingMain:
 
         firstLevel = levelfile.Level()
 
-        self.main_loop(screen, firstLevel, clock, False, False)
+        self.main_loop(screen, firstLevel, clock, waitStart)
 
-    def main_loop(self, window, level, clock, stop, pause):
+    def main_loop(self, window, level, clock, delayStart):
         run = True
+        waitStart = delayStart
+        waitEnd = True
         scrollAmt = 0
         level.build(window)
         pygame.display.flip()
-        
-        while run:
+
+        while waitStart:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: #user clicks close
+                    waitStart = False
                     run = False
+                    waitEnd = False
                 
+            keys = pygame.key.get_pressed()
+
+            if keys[pygame.K_RETURN]:
+                waitStart = False
+                
+            level.start(window)
+            
+            pygame.display.flip()
+        
+        while run:
             keys = pygame.key.get_pressed()
             
             if keys[pygame.K_d]:
@@ -51,15 +65,34 @@ class FlingMain:
                 scrollAmt += 4
             if keys[pygame.K_SPACE]:
                 level.player.jump()
-
-            level.update(scrollAmt)
+            if keys[pygame.K_u]:
+                level.player.grabbing = True
+            else:
+                level.player.grabbing = False
+            
+            run = level.update(window, scrollAmt)
             level.draw(window)
             pygame.display.flip()
             clock.tick(60)
             scrollAmt = 0
-            
-                # main game loops
-                # Update state of all entities
-                # Read Player input
 
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: #user clicks close
+                    run = False
+                    waitEnd = False
+                
+        while waitEnd:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: #user clicks close
+                    waitEnd = False
+                
+            keys = pygame.key.get_pressed()
+
+            if keys[pygame.K_RETURN]:
+                self.start_game(False)
+                
+            level.end(window)
+            
+            pygame.display.flip()
+        
         pygame.quit()

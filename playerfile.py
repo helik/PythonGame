@@ -23,19 +23,24 @@ class Player(pygame.sprite.Sprite):
         self.hitLeft = False
         self.hitRight = False
         self.booped = False
+        self.grabbing = False
+        self.holding = []
+        self.facingRight = True
+        self.boop = pygame.mixer.Sound("boop.wav")
+        
     def face_left(self):
         self.image = self.leftImage
+        self.facingRight = False
 
     def face_right(self):
         self.image = self.rightImage
+        self.facingRight = True
         
     def update(self, platform_sprites):
         #check if player is touching platform
         platformHitList = pygame.sprite.spritecollide(self, platform_sprites, False)
         self.check_platform_collisions(platformHitList)
 
-        # print "jumping: " + str(self.jumping) + " falling: " + str(self.falling) + " grounded: " + str(self.grounded)
-        
         # at or past the top of the arc
         if self.yVel > 0:
             self.jumping = False
@@ -80,13 +85,28 @@ class Player(pygame.sprite.Sprite):
 
         self.yPos += self.yVel
         self.rect.y = int(self.yPos)
-            
+        self.setEnemyPos()
+
+        if not self.grabbing:
+            for e in self.holding:
+                e.fling(self.facingRight)
+                self.holding.remove(e)
+        
     def jump(self):
         if self.grounded and not self.jumping:
+            self.boop.play()
             self.grounded = False
             self.jumping = True
             self.falling = False
             self.yVel = -15
+
+    def setEnemyPos(self):
+        for e in self.holding:
+            if self.image == self.rightImage:
+                e.rect.x = self.xPos + 75
+            else:
+                e.rect.x = self.xPos - 60
+            e.rect.y = self.rect.y
 
     def check_platform_collisions(self, platList):
         self.hitTop = []
